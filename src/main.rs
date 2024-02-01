@@ -4,6 +4,7 @@ mod cpu;
 
 use std::fs::File;
 use std::io::Read;
+use std::env;
 
 use chip8::Chip8;
 
@@ -15,15 +16,24 @@ fn main() {
     let mut buffer = Vec::<u8>::new();
 
     file.read_to_end(&mut buffer).expect("Error reading to the buffer");
+    let args: Vec<String> = env::args().collect();
 
-    // println!("{:?}", buffer);
+    let mut debug = false;
+
+    if args.len() >= 2{
+        if args[1] == "debug"{
+            debug = true;
+        }
+    }
 
     let mut console = Chip8::new();
     console.load_rom(&buffer);
 
     loop{
         console.run_instruction();
+        if debug == true{
+            println!("{:?}", console);
+        }
     }
-
 
 }
